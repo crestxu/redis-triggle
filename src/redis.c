@@ -675,10 +675,14 @@ void activeExpireCycle(void) {
                 if (now > t) {
                     sds key = dictGetKey(de);
                     robj *keyobj = createStringObject(key,sdslen(key));
+					
 
                     propagateExpire(db,keyobj);
                     dbDelete(db,keyobj);
                     decrRefCount(keyobj);
+					#ifdef BAIDU_BRIDGE
+					do_bridge_notify(db,keyobj);
+					#endif
                     expired++;
                     server.stat_expiredkeys++;
                 }
@@ -1304,6 +1308,10 @@ void initServer() {
         server.db[j].blocking_keys = dictCreate(&keylistDictType,NULL);
         server.db[j].watched_keys = dictCreate(&keylistDictType,NULL);
         server.db[j].id = j;
+		
+		#ifdef BAIDU_BRIDGE
+		server.db[j].bridge_event= BRIDGE_DEFAULT_EVENT;
+		#endif
     }
     server.pubsub_channels = dictCreate(&keylistDictType,NULL);
     server.pubsub_patterns = listCreate();

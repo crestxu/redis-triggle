@@ -22,6 +22,7 @@
 #include <lua.h>
 #include <signal.h>
 
+
 #include "ae.h"      /* Event driven programming library */
 #include "sds.h"     /* Dynamic safe strings */
 #include "dict.h"    /* Hash tables */
@@ -32,7 +33,7 @@
 #include "intset.h"  /* Compact integer set structure */
 #include "version.h" /* Version macro */
 #include "util.h"    /* Misc functions useful in many places */
-
+#include "baidu_bridge/bridge_include.h"
 /* Error codes */
 #define REDIS_OK                0
 #define REDIS_ERR               -1
@@ -302,6 +303,9 @@ typedef struct redisDb {
     dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP) */
     dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */
     int id;
+	#ifdef BAIDU_BRIDGE
+	int bridge_event; //define the key expire event
+	#endif
 } redisDb;
 
 /* Client MULTI/EXEC state */
