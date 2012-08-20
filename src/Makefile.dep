@@ -10,6 +10,9 @@ aof.o: aof.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
 bio.o: bio.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h anet.h \
   ziplist.h intset.h version.h util.h rdb.h rio.h bio.h
+
+baidu_bridge/baidu_process.o: redis.h baidu_bridge/bridge_include.h
+
 cluster.o: cluster.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h anet.h \
   ziplist.h intset.h version.h util.h rdb.h rio.h endianconv.h
