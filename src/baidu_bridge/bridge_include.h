@@ -7,7 +7,7 @@
 #define BRIDGE_KEY_UNNOTIFY 0 
 
 
-void do_bridge_notify(redisDb *db,redisObject *keyobj);
+void do_bridge_notify(void *db,void *keyobj);
 
 
 #endif

@@ -676,14 +676,14 @@ void activeExpireCycle(void) {
                     sds key = dictGetKey(de);
                     robj *keyobj = createStringObject(key,sdslen(key));
 					
-
+				    #ifdef BAIDU_BRIDGE
+					do_bridge_notify(db,keyobj);
+					#endif
+      
                     propagateExpire(db,keyobj);
                     dbDelete(db,keyobj);
                     decrRefCount(keyobj);
-					#ifdef BAIDU_BRIDGE
-					do_bridge_notify(db,keyobj);
-					#endif
-                    expired++;
+	                expired++;
                     server.stat_expiredkeys++;
                 }
             }
