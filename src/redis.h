@@ -75,7 +75,7 @@
 /* Hash table parameters */
 #define REDIS_HT_MINFILL        10      /* Minimal hash table fill 10% */
 
-/* Command flags. Please check the command table defined in the redis.c file
+/* Command flags. Please checkthe command table defined in the redis.c file 
  * for more information about the meaning of every flag. */
 #define REDIS_CMD_WRITE 1                   /* "w" flag */
 #define REDIS_CMD_READONLY 2                /* "r" flag */

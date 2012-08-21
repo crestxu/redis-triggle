@@ -15,3 +15,39 @@ void do_bridge_notify(void  *pdb,void *pkeyobj)
 		}
 }
 
+
+void triggleCommand(void *pc)
+{
+
+	redisClient *c=(redisClient *)pc;
+    setGenericCommand(c,0,c->argv[1],c->argv[2],NULL,0);
+}
+void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_pattern, robj *script_source) {
+    long long milliseconds = 0; /* initialized to avoid an harmness warning */
+
+   /* if (expire) {
+        if (getLongLongFromObjectOrReply(c, expire, &milliseconds, NULL) != REDIS_OK)
+            return;
+        if (milliseconds <= 0) {
+            addReplyError(c,"invalid expire time in SETEX");
+            return;
+        }
+        if (unit == UNIT_SECONDS) milliseconds *= 1000;
+    }
+
+    if (lookupKeyWrite(c->db,key) != NULL && nx) {
+        addReply(c,shared.czero);
+        return;
+    }
+    setKey(c->db,key,val);
+    server.dirty++;
+    if (expire) setExpire(c->db,key,mstime()+milliseconds);
+    addReply(c, nx ? shared.cone : shared.ok);*/
+     redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
+
+     addReplyError(c,"no action for triggle");
+   
+}
+
+
+

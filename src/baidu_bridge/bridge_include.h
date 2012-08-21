@@ -9,5 +9,10 @@
 
 void do_bridge_notify(void *db,void *keyobj);
 
+void triggleCommand(void *c); //redisClient *c
+
+
+
+
 
 #endif
