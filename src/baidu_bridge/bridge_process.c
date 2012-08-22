@@ -1,5 +1,22 @@
 #include"redis.h"
 
+
+extern redisServer * server;
+
+struct bridge_db_triggle{
+	BAIDU_BRIDGE_TRIGGLE event;
+	robj * lua_scripts;
+	int dbid;
+};
+
+struct bridge_db_externtion{
+	dict * triggle_scipts;
+	
+};
+
+
+
+
 void do_bridge_notify(void  *pdb,void *pkeyobj)
 {
     redisDb *db=(redisDb *)pdb;
@@ -17,7 +34,7 @@ void do_bridge_notify(void  *pdb,void *pkeyobj)
 
 
 
-void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_pattern, robj *script_source) {
+void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_pattern,robj *event_type, robj *script_source) {
 //    long long milliseconds = 0; /* initialized to avoid an harmness warning */
 
    /* if (expire) {
@@ -50,5 +67,5 @@ void triggleCommand(void *pc)
 
 	redisClient *c=(redisClient *)pc;
 
-    triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3]);
+    triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3],c->argv[3]);
 }
