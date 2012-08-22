@@ -16,14 +16,9 @@ void do_bridge_notify(void  *pdb,void *pkeyobj)
 }
 
 
-void triggleCommand(void *pc)
-{
 
-	redisClient *c=(redisClient *)pc;
-    setGenericCommand(c,0,c->argv[1],c->argv[2],NULL,0);
-}
 void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_pattern, robj *script_source) {
-    long long milliseconds = 0; /* initialized to avoid an harmness warning */
+//    long long milliseconds = 0; /* initialized to avoid an harmness warning */
 
    /* if (expire) {
         if (getLongLongFromObjectOrReply(c, expire, &milliseconds, NULL) != REDIS_OK)
@@ -50,4 +45,10 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 }
 
 
+void triggleCommand(void *pc)
+{
 
+	redisClient *c=(redisClient *)pc;
+
+    triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3]);
+}
