@@ -1,18 +1,6 @@
 #include"redis.h"
 
 
-extern redisServer * server;
-
-struct bridge_db_triggle{
-	BAIDU_BRIDGE_TRIGGLE event;
-	robj * lua_scripts;
-	int dbid;
-};
-
-struct bridge_db_externtion{
-	dict * triggle_scipts;
-	
-};
 
 
 
@@ -62,7 +50,7 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 }
 
 
-void triggleCommand(void *pc)
+void triggleCommand(redisClient *pc)
 {
 
 	redisClient *c=(redisClient *)pc;
