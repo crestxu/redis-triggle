@@ -101,8 +101,7 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 	tmptrg->lua_scripts=script_source;
 	incrRefCount(script_source);
     redisDb *db = server.db[id];
-	sds copy=sdsdup(key_pattern->ptr);
-	dictAdd(db.bridge_db.triggle_scipts,copy,tmptrg);
+	dictAdd(db.bridge_db.triggle_scipts,key_pattern,tmptrg);
     addReply(c, nx ? shared.cone : shared.ok);
 	
    
