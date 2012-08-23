@@ -303,9 +303,12 @@ typedef struct redisDb {
     dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP) */
     dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */
     int id;
+
+	
 	#ifdef BAIDU_BRIDGE
-	int bridge_event; //define the key expire event
+	BRIDGE_DB_EXTENTIONS
 	#endif
+
 } redisDb;
 
 /* Client MULTI/EXEC state */
@@ -747,9 +750,6 @@ struct redisServer {
     int watchdog_period;  /* Software watchdog period in ms. 0 = off */
 
 	
-	#ifdef BAIDU_BRIDGE
-	BRIDGE_DB_EXTENTIONS
-	#endif 
 };
 
 typedef struct pubsubPattern {

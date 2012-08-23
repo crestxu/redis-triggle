@@ -3,6 +3,38 @@
 
 
 
+extern redisServer server;
+
+
+
+
+void decrRefTriggleCount(void *obj) {
+    robj *o = obj;
+
+    if (o->refcount <= 0) redisPanic("decrRefCount against refcount <= 0");
+    if (o->refcount == 1) {
+        switch(o->type) {
+        case REDIS_STRING: freeStringObject(o); break;
+        case REDIS_LIST: freeListObject(o); break;
+        case REDIS_SET: freeSetObject(o); break;
+        case REDIS_ZSET: freeZsetObject(o); break;
+        case REDIS_HASH: freeHashObject(o); break;
+        default: redisPanic("Unknown object type"); break;
+        }
+        zfree(o);
+    } else {
+        o->refcount--;
+    }
+}
+
+
+robj *createTriggleObject(void) {
+    list *l = listCreate();
+    robj *o = createObject(REDIS_LIST,l);
+    listSetFreeMethod(l,decrRefTriggleCount);
+    o->encoding = REDIS_ENCODING_RAW;
+    return o;
+}
 
 
 void do_bridge_notify(void  *pdb,void *pkeyobj)
@@ -43,9 +75,22 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     server.dirty++;
     if (expire) setExpire(c->db,key,mstime()+milliseconds);
     addReply(c, nx ? shared.cone : shared.ok);*/
-     redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
-
-     addReplyError(c,"no action for triggle");
+    redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
+    int id = atoi(db_id->ptr);
+	int int_event=atoi(event_type->ptr);
+	if(id<0)
+		{
+			addReplyError(c,"wrong dbid for triggle");
+		}
+	bridge_db_triggle_t *tmptrg=malloc(sizeof(bridge_db_triggle_t);
+	tmptrg->dbid=id;
+	tmptrg->event=int_event;
+	tmptrg->lua_scripts=script_source;
+	incrRefCount(script_source);
+    redisDb *db = server.db[id];
+	dictAdd(db.bridge_db.triggle_scipts,key_pattern,tmptrg);
+    addReply(c, nx ? shared.cone : shared.ok);
+	
    
 }
 
