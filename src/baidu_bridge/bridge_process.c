@@ -1,7 +1,5 @@
 #include"redis.h"
-
 #include"dict.h"
-
 
 extern struct redisServer server;
 extern struct dictType keyptrDictType;
@@ -106,6 +104,45 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     addReply(c, nx ? shared.cone : shared.ok);
 	
    
+}
+
+void triggleDelCommand(struct redisClient *c)
+{
+
+}
+
+
+void triggleListCommand(struct redisClient *c)
+{
+  
+    int id = atoi(c->argv[1]->ptr);
+	if(id<0||id>server.dbnum)
+		{
+			addReplyError(c,"wrong dbid for triggle");
+            return;
+		}
+	//struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
+	//tmptrg->dbid=id;
+	//tmptrg->event=int_event;
+	//tmptrg->lua_scripts=script_source;
+	//incrRefCount(script_source);
+    //sds copy=sdsdup(key_pattern->ptr);
+    //dictAdd(server.db[id].bridge_db.triggle_scipts,copy,tmptrg);
+    struct dictEntry *de = dictFind(server.db[id].dict,c->argv[2]->ptr);
+    if(de)
+    {
+    //    struct bridge_db_triggle_t * tmptrg=dictGetEntryVal(de);
+      
+        struct bridge_db_triggle_t * tmptrg=de->val;
+        addReplyStatusFormat(c,"dbid:%dkey:%sevent:%d source:%s",tmptrg->dbid,c->argv[2]->ptr,tmptrg->event,tmptrg->lua_scripts->ptr);
+
+    }
+    else
+    {
+        addReplyError(c,"triggle not found");
+    }
+    //addReply(c, nx ? shared.cone : shared.ok);
+	
 }
 
 

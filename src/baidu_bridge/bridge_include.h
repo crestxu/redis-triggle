@@ -63,7 +63,9 @@ void do_bridge_notify(void *db,void *keyobj);
 void triggleCommand(struct redisClient *c); //redisClient *c
 
 
+void triggleDelCommand(struct redisClient *c); //redisClient *c
 
 
+void triggleListCommand(struct redisClient *c); //redisClient *c
 
 #endif
