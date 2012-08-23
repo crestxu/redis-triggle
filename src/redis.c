@@ -1312,10 +1312,11 @@ void initServer() {
         server.db[j].watched_keys = dictCreate(&keylistDictType,NULL);
         server.db[j].id = j;
 		
-		#ifdef BAIDU_BRIDGE
-		server.db[j].bridge_event= BRIDGE_DEFAULT_EVENT;
-		#endif
+		
     }
+	#ifdef BAIDU_BRIDGE
+		init_bridge_server();
+	#endif
     server.pubsub_channels = dictCreate(&keylistDictType,NULL);
     server.pubsub_patterns = listCreate();
     listSetFreeMethod(server.pubsub_patterns,freePubsubPattern);

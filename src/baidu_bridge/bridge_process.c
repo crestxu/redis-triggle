@@ -6,7 +6,20 @@
 extern redisServer server;
 
 
+void init_bridge_server()
+{
+	
 
+
+	 for (j = 0; j < server.dbnum; j++) {
+        
+		server.db[j].bridge_db.bridge_event= BRIDGE_DEFAULT_EVENT;
+		server.db[j].bridge_db.triggle_scipts= dictCreate(&keyptrDictType,NULL);
+		
+		
+    }
+
+}
 
 void decrRefTriggleCount(void *obj) {
     robj *o = obj;
@@ -41,7 +54,7 @@ void do_bridge_notify(void  *pdb,void *pkeyobj)
 {
     redisDb *db=(redisDb *)pdb;
     robj *keyobj=(robj *)pkeyobj;
-	if(db->bridge_event==BRIDGE_KEY_NOTIFY) //do notify event
+	if(db->bridge_db.bridge_event==BRIDGE_KEY_NOTIFY) //do notify event
 		{
 		    sds key = sdsnew(BRIDGE_SYSTEM_CHANNEL);
             robj *bridge_channel = createStringObject(key,sdslen(key));

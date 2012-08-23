@@ -49,12 +49,14 @@ typedef struct bridge_db_triggle_t{
 
 typedef struct bridge_db_externtion_t{
 	dict * triggle_scipts;
+	int bridge_event;
 }bridge_db_externtion_t;
 
 
 #define BRIDGE_DB_EXTENTIONS  bridge_db_externtion_t bridge_db;
 
 
+void init_bridge_server();
 
 void do_bridge_notify(void *db,void *keyobj);
 
