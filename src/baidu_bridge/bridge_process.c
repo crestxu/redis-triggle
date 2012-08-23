@@ -1,15 +1,15 @@
 #include"redis.h"
 
+#include"dict.h"
 
 
-
-extern redisServer server;
+extern struct redisServer server;
 
 
 void init_bridge_server()
 {
 	
-
+     int j;
 
 	 for (j = 0; j < server.dbnum; j++) {
         
@@ -95,7 +95,7 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 		{
 			addReplyError(c,"wrong dbid for triggle");
 		}
-	bridge_db_triggle_t *tmptrg=malloc(sizeof(bridge_db_triggle_t);
+	struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t);
 	tmptrg->dbid=id;
 	tmptrg->event=int_event;
 	tmptrg->lua_scripts=script_source;
