@@ -53,7 +53,7 @@ typedef struct bridge_db_externtion_t{
 }bridge_db_externtion_t;
 
 
-#define BRIDGE_DB_EXTENTIONS  bridge_db_externtion_t bridge_db;
+#define BRIDGE_DB_EXTENTIONS  struct bridge_db_externtion_t bridge_db;
 
 
 void init_bridge_server();

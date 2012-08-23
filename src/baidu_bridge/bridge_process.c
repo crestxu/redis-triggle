@@ -4,7 +4,7 @@
 
 
 extern struct redisServer server;
-
+extern struct dictType keyptrDictType;
 
 void init_bridge_server()
 {
@@ -89,19 +89,21 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     if (expire) setExpire(c->db,key,mstime()+milliseconds);
     addReply(c, nx ? shared.cone : shared.ok);*/
     redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
-    int id = atoi(db_id->ptr);
+   int id = atoi(db_id->ptr);
 	int int_event=atoi(event_type->ptr);
 	if(id<0)
 		{
 			addReplyError(c,"wrong dbid for triggle");
 		}
-	struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t);
+	struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
 	tmptrg->dbid=id;
 	tmptrg->event=int_event;
 	tmptrg->lua_scripts=script_source;
 	incrRefCount(script_source);
-    redisDb *db = server.db[id];
-	dictAdd(db.bridge_db.triggle_scipts,key_pattern,tmptrg);
+    incrRefCount(key_pattern);
+    redisLog("id:%d event: %d key_pattern:%s source:%s",id,int_event,key_pattern->ptr,script_source->ptr);
+    sds copy=sdsdup(key_pattern->ptr);
+    dictAdd(server.db[id].bridge_db.triggle_scipts,copy,tmptrg);
     addReply(c, nx ? shared.cone : shared.ok);
 	
    
@@ -113,5 +115,5 @@ void triggleCommand(redisClient *pc)
 
 	redisClient *c=(redisClient *)pc;
 
-    triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3],c->argv[3]);
+    triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3],c->argv[4]);
 }
