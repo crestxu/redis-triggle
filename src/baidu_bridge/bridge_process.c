@@ -91,17 +91,16 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
    int id = atoi(db_id->ptr);
 	int int_event=atoi(event_type->ptr);
-	if(id<0)
+	if(id<0||id>server.dbnum)
 		{
 			addReplyError(c,"wrong dbid for triggle");
+            return;
 		}
 	struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
 	tmptrg->dbid=id;
 	tmptrg->event=int_event;
 	tmptrg->lua_scripts=script_source;
 	incrRefCount(script_source);
-    incrRefCount(key_pattern);
-    redisLog("id:%d event: %d key_pattern:%s source:%s",id,int_event,key_pattern->ptr,script_source->ptr);
     sds copy=sdsdup(key_pattern->ptr);
     dictAdd(server.db[id].bridge_db.triggle_scipts,copy,tmptrg);
     addReply(c, nx ? shared.cone : shared.ok);
