@@ -139,19 +139,19 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
    funcdef = sdscatlen(funcdef,script_source->ptr,sdslen(script_source->ptr));
    funcdef = sdscatlen(funcdef," end",4);
    
-   if (luaL_loadbuffer(lua,funcdef,sdslen(funcdef),"@user_script")) {
+   if (luaL_loadbuffer(server.lua,funcdef,sdslen(funcdef),"@user_script")) {
 		   addReplyErrorFormat(c,"Error compiling script (new function): %s\n",
-			   lua_tostring(lua,-1));
-		   lua_pop(lua,1);
+			   lua_tostring(server.lua,-1));
+		   lua_pop(server.lua,1);
 		   sdsfree(funcdef);
-		   //return REDIS_ERR;
+		   return ;
    }
    sdsfree(funcdef);
-   if (lua_pcall(lua,0,0,0)) {
+   if (lua_pcall(server.lua,0,0,0)) {
 		   addReplyErrorFormat(c,"Error running script (new function): %s\n",
-			   lua_tostring(lua,-1));
-		   lua_pop(lua,1);
-		   return REDIS_ERR;
+			   lua_tostring(server.lua,-1));
+		   lua_pop(server.lua,1);
+		   return ;
    }
 
 
