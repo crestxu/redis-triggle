@@ -131,9 +131,9 @@ void triggleListCommand(struct redisClient *c)
     struct dictEntry *de = dictFind(server.db[id].dict,c->argv[2]->ptr);
     if(de)
     {
-    //    struct bridge_db_triggle_t * tmptrg=dictGetEntryVal(de);
+        struct bridge_db_triggle_t * tmptrg=dictGetEntryVal(de);
       
-        struct bridge_db_triggle_t * tmptrg=de->val;
+//        struct bridge_db_triggle_t * tmptrg=de->val;
         addReplyStatusFormat(c,"dbid:%dkey:%sevent:%d source:%s",tmptrg->dbid,c->argv[2]->ptr,tmptrg->event,tmptrg->lua_scripts->ptr);
 
     }

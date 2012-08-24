@@ -183,4 +183,4 @@ zipmap.o: zipmap.c zmalloc.h ../deps/jemalloc/include/jemalloc/jemalloc.h \
 zmalloc.o: zmalloc.c config.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h
-baidu_bridge/bridge_process.o: baidu_bridge/bridge_process.c redis.h dict.h
+baidu_bridge/bridge_process.o: baidu_bridge/bridge_process.c baidu_bridge/bridge_include.h redis.h dict.h
