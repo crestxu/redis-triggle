@@ -141,7 +141,7 @@ void triggleDelCommand(struct redisClient *c)
 				addReplyError(c,"wrong dbid for triggle");
 				return;
 			}
-		if(	dictDelete(server.db[id].dict,c->argv[2]->ptr)==DICT_OK)
+		if(	dictDelete(server.db[id].bridge_db.triggle_scipts,c->argv[2]->ptr)==DICT_OK)
 		{
 		   addReply(c,  shared.ok);
 	
