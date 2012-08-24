@@ -4,6 +4,29 @@
 extern struct redisServer server;
 extern struct dictType keyptrDictType;
 
+
+void dicttriggleDestructor(void *privdata, void *val)
+{
+    DICT_NOTUSED(privdata);
+	
+	struct bridge_db_triggle_t *tmptrg=(struct bridge_db_triggle_t *)val;
+	decrRefCount(tmptrg->script_source);
+    free(val);
+}
+
+
+dictType keytriggleDictType = {
+    dictSdsHash,               /* hash function */
+    NULL,                      /* key dup */
+    NULL,                      /* val dup */
+    dictSdsKeyCompare,         /* key compare */
+    dictSdsDestructor,                      /* key destructor */
+    dicttriggleDestructor                       /* val destructor */
+};
+
+
+
+
 void init_bridge_server()
 {
 	
@@ -12,7 +35,7 @@ void init_bridge_server()
 	 for (j = 0; j < server.dbnum; j++) {
         
 		server.db[j].bridge_db.bridge_event= BRIDGE_DEFAULT_EVENT;
-		server.db[j].bridge_db.triggle_scipts= dictCreate(&keyptrDictType,NULL);
+		server.db[j].bridge_db.triggle_scipts= dictCreate(&keytriggleDictType,NULL);
 		
 		
     }
@@ -108,6 +131,32 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 
 void triggleDelCommand(struct redisClient *c)
 {
+	int id = atoi(c->argv[1]->ptr);
+		if(id<0||id>server.dbnum)
+			{
+				addReplyError(c,"wrong dbid for triggle");
+				return;
+			}
+		//struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
+		//tmptrg->dbid=id;
+		//tmptrg->event=int_event;
+		//tmptrg->lua_scripts=script_source;
+		//incrRefCount(script_source);
+		//sds copy=sdsdup(key_pattern->ptr);
+		//dictAdd(server.db[id].bridge_db.triggle_scipts,copy,tmptrg);
+	
+		if(	dictDelete(server.db[id].dict,c->argv[2]->ptr)==DICT_OK)
+		{
+		   addReply(c,  shared.ok);
+	
+		}
+		else
+		{
+			addReplyError(c,"delete unknow error");
+		}
+		//addReply(c, nx ? shared.cone : shared.ok);
+		
+
 
 }
 
