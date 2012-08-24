@@ -251,7 +251,7 @@ struct redisCommand redisCommandTable[] = {
     {"script",scriptCommand,-2,"ras",0,NULL,0,0,0,0,0},
     {"time",timeCommand,1,"rR",0,NULL,0,0,0,0,0},
     #ifdef BAIDU_BRIDGE
-	{"triggleadd",triggleCommand,5,"wm",0,NULL,0,0,0,0,0},
+	{"triggleadd",triggleCommand,-2,"ras",0,NULL,0,0,0,0,0},
 	{"triggledel",triggleDelCommand,3,"w",0,NULL,0,0,0,0,0},
 	{"trigglelist",triggleListCommand,3,"r",0,NULL,0,0,0,0,0},
     #endif
