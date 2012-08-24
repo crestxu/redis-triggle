@@ -252,8 +252,8 @@ struct redisCommand redisCommandTable[] = {
     {"time",timeCommand,1,"rR",0,NULL,0,0,0,0,0},
     #ifdef BAIDU_BRIDGE
 	{"triggleadd",triggleCommand,5,"wm",0,NULL,0,0,0,0,0},
-	{"triggledel",triggleDelCommand,3,"wm",0,NULL,0,0,0,0,0},
-	{"trigglelist",triggleListCommand,3,"wm",0,NULL,0,0,0,0,0},
+	{"triggledel",triggleDelCommand,3,"w",0,NULL,0,0,0,0,0},
+	{"trigglelist",triggleListCommand,3,"r",0,NULL,0,0,0,0,0},
     #endif
     {"bitop",bitopCommand,-4,"wm",0,NULL,2,-1,1,0,0},
     {"bitcount",bitcountCommand,-2,"r",0,NULL,1,1,1,0,0}
