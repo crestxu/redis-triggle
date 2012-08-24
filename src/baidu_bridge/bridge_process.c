@@ -1,6 +1,13 @@
 #include"redis.h"
 #include"dict.h"
 
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+#include <ctype.h>
+#include <math.h>
+
+
 extern struct redisServer server;
 extern struct dictType keyptrDictType;
 
@@ -121,6 +128,55 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 			addReplyError(c,"wrong dbid for triggle");
             return;
 		}
+
+
+   /*lua_check*/
+   sds funcdef = sdsempty();
+
+   funcdef = sdscat(funcdef,"function ");
+   funcdef = sdscatlen(funcdef,key_pattern->ptr,42);
+   funcdef = sdscatlen(funcdef,"() ",3);
+   funcdef = sdscatlen(funcdef,script_source->ptr,sdslen(script_source->ptr));
+   funcdef = sdscatlen(funcdef," end",4);
+   
+   if (luaL_loadbuffer(lua,funcdef,sdslen(funcdef),"@user_script")) {
+		   addReplyErrorFormat(c,"Error compiling script (new function): %s\n",
+			   lua_tostring(lua,-1));
+		   lua_pop(lua,1);
+		   sdsfree(funcdef);
+		   //return REDIS_ERR;
+   }
+   sdsfree(funcdef);
+   if (lua_pcall(lua,0,0,0)) {
+		   addReplyErrorFormat(c,"Error running script (new function): %s\n",
+			   lua_tostring(lua,-1));
+		   lua_pop(lua,1);
+		   return REDIS_ERR;
+   }
+
+
+   /*end lua check*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 	struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
 	tmptrg->dbid=id;
 	tmptrg->event=int_event;
@@ -199,3 +255,15 @@ void triggleCommand(redisClient *pc)
 
     triggleGenericCommand(c,0,c->argv[1],c->argv[2],c->argv[3],c->argv[4]);
 }
+
+
+
+
+
+void call_bridge_event(struct redisClient *c,int event_type)
+{
+
+
+    
+}
+
