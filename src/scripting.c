@@ -919,6 +919,7 @@ void scriptCommand(redisClient *c) {
     } else if (c->argc == 3 && !strcasecmp(c->argv[1]->ptr,"load")) {
         char funcname[43];
         sds sha;
+		redisLog(REDIS_NOTICE,"script source: %s",c->argv[2]);
 
         funcname[0] = 'f';
         funcname[1] = '_';
