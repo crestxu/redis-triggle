@@ -4,13 +4,17 @@
 extern struct redisServer server;
 extern struct dictType keyptrDictType;
 
+unsigned int dictSdsHash(const void *key);
+int dictSdsKeyCompare(void *privdata, const void *key1, const void *key2);
+void dictSdsDestructor(void *privdata, void *val);
+
 
 void dicttriggleDestructor(void *privdata, void *val)
 {
     DICT_NOTUSED(privdata);
 	
 	struct bridge_db_triggle_t *tmptrg=(struct bridge_db_triggle_t *)val;
-	decrRefCount(tmptrg->script_source);
+	decrRefCount(tmptrg->lua_scripts);
     free(val);
 }
 
@@ -137,14 +141,6 @@ void triggleDelCommand(struct redisClient *c)
 				addReplyError(c,"wrong dbid for triggle");
 				return;
 			}
-		//struct bridge_db_triggle_t *tmptrg=malloc(sizeof(struct bridge_db_triggle_t));
-		//tmptrg->dbid=id;
-		//tmptrg->event=int_event;
-		//tmptrg->lua_scripts=script_source;
-		//incrRefCount(script_source);
-		//sds copy=sdsdup(key_pattern->ptr);
-		//dictAdd(server.db[id].bridge_db.triggle_scipts,copy,tmptrg);
-	
 		if(	dictDelete(server.db[id].dict,c->argv[2]->ptr)==DICT_OK)
 		{
 		   addReply(c,  shared.ok);
@@ -154,7 +150,6 @@ void triggleDelCommand(struct redisClient *c)
 		{
 			addReplyError(c,"delete unknow error");
 		}
-		//addReply(c, nx ? shared.cone : shared.ok);
 		
 
 
