@@ -47,7 +47,7 @@ set ::all_tests {
 set ::next_test 0
 
 set ::host 127.0.0.1
-set ::port 21111
+set ::port 8821
 set ::traceleaks 0
 set ::valgrind 0
 set ::verbose 0

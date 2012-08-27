@@ -363,7 +363,7 @@ static sds cliFormatReplyTTY(redisReply *r, char *prefix) {
         out = sdscat(out,"\n");
     break;
     case REDIS_REPLY_NIL:
-        out = sdscat(out,"(nil)\n");
+        out = sdscat(out,"(null)\n");
     break;
     case REDIS_REPLY_ARRAY:
         if (r->elements == 0) {
