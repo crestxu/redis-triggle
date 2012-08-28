@@ -243,9 +243,10 @@ int do_expire_event(struct redisClient *c,sds *funcname)
 {
 
     lua_getglobal(server.lua, funcname);
-    /*if (lua_isnil(server.lua,1)) {
+    if (lua_isnil(server.lua,1)) {
         addReplyError(c,"no funcname triggle_scipts in lua");
-    }*/
+        return 0;
+    }
     luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
 
     // luaSetGlobalArray(server.lua,"ARGV",c->argv+3+numkeys,c->argc-3-numkeys);
@@ -254,6 +255,7 @@ int do_expire_event(struct redisClient *c,sds *funcname)
     selectDb(server.lua_client,c->db->id);
 
 
+    redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
     if (server.lua_time_limit > 0) {
         lua_sethook(server.lua,luaMaskCountHook,LUA_MASKCOUNT,100000);
         server.lua_time_start = ustime()/1000;
@@ -286,12 +288,21 @@ int do_delete_event(struct redisClient *c,sds *funcname)
     server.lua_random_dirty = 0;
     server.lua_write_dirty = 0;
     lua_getglobal(server.lua, funcname);
-    /*if (lua_isnil(server.lua,1)) {
-        addReplyError(c,"no funcname triggle_scipts in lua");
-    }*/
-    luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
     
-    luaSetGlobalArray(server.lua,"ARGV",NULL,0);
+
+
+    if (lua_isnil(server.lua,1)) {
+        addReplyError(c,"no funcname triggle_scipts in lua");
+        return 0;
+    }
+    luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
+
+    // luaSetGlobalArray(server.lua,"ARGV",c->argv+3+numkeys,c->argc-3-numkeys);
+
+
+    redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
+ 
+
 
 
     #ifdef BRIDGE_DEBUG
@@ -306,7 +317,6 @@ int do_delete_event(struct redisClient *c,sds *funcname)
     selectDb(server.lua_client,c->db->id);
 
 
-    server.lua_caller = c;
     server.lua_time_start = ustime()/1000;
     server.lua_kill = 0;
 
@@ -329,7 +339,7 @@ int do_delete_event(struct redisClient *c,sds *funcname)
         return -1;
     }
     selectDb(c,server.lua_client->db->id); /* set DB ID from Lua client */
-    luaReplyToRedisReply(c,server.lua);
+   // luaReplyToRedisReply(c,server.lua);
     server.lua_timedout = 0;
     server.lua_caller = NULL;
     lua_gc(server.lua,LUA_GCSTEP,1);
