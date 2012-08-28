@@ -7,6 +7,7 @@
 #define BRIDGE_KEY_UNNOTIFY 0 
 #include"dict.h"
 
+#define BRIDGE_DEBUG 1 
 struct redisClient;
 struct redisObject;
 struct dict;

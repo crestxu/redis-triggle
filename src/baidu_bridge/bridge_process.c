@@ -7,7 +7,6 @@
 #include <ctype.h>
 #include <math.h>
 
-
 extern struct redisServer server;
 extern struct dictType keyptrDictType;
 
@@ -274,7 +273,7 @@ int do_expire_event(struct redisClient *c,sds *funcname)
         return -1;
     }
     selectDb(c,server.lua_client->db->id); /* set DB ID from Lua client */
-    // luaReplyToRedisReply(c,lua);
+    //luaReplyToRedisReply(c,server.lua);
     lua_gc(server.lua,LUA_GCSTEP,1);
     return 0; 
 }
@@ -283,17 +282,33 @@ int do_expire_event(struct redisClient *c,sds *funcname)
 int do_delete_event(struct redisClient *c,sds *funcname)
 {
 
+    redisSrand48(0);
+    server.lua_random_dirty = 0;
+    server.lua_write_dirty = 0;
     lua_getglobal(server.lua, funcname);
     /*if (lua_isnil(server.lua,1)) {
         addReplyError(c,"no funcname triggle_scipts in lua");
     }*/
     luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
+    
+    luaSetGlobalArray(server.lua,"ARGV",NULL,0);
+
+
+    #ifdef BRIDGE_DEBUG
+    for(int i=0;i<c->argc-1;i++){
+        redisLog(REDIS_NOTICE,"%s",(c->argv+1)[i]->ptr);
+    }
+    #endif
 
     // luaSetGlobalArray(server.lua,"ARGV",c->argv+3+numkeys,c->argc-3-numkeys);
 
     /* Select the right DB in the context of the Lua client */
     selectDb(server.lua_client,c->db->id);
 
+
+    server.lua_caller = c;
+    server.lua_time_start = ustime()/1000;
+    server.lua_kill = 0;
 
     if (server.lua_time_limit > 0) {
         lua_sethook(server.lua,luaMaskCountHook,LUA_MASKCOUNT,100000);
@@ -314,8 +329,14 @@ int do_delete_event(struct redisClient *c,sds *funcname)
         return -1;
     }
     selectDb(c,server.lua_client->db->id); /* set DB ID from Lua client */
-    // luaReplyToRedisReply(c,lua);
+    luaReplyToRedisReply(c,server.lua);
+    server.lua_timedout = 0;
+    server.lua_caller = NULL;
     lua_gc(server.lua,LUA_GCSTEP,1);
+
+    //for slaves
+    //
+
     return 0; 
 }
 
