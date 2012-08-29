@@ -1705,7 +1705,13 @@ int processCommand(redisClient *c) {
         queueMultiCommand(c);
         addReply(c,shared.queued);
     } else {
+	#ifdef TRIGGLE_INCLUDE
+	   call_bridge_event_before(c);
+    #endif
         call(c,REDIS_CALL_FULL);
+	#ifdef TRIGGLE_INCLUDE
+	    call_bridge_event_after(c);
+	#endif 
     }
     return REDIS_OK;
 }

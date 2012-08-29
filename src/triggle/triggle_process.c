@@ -181,7 +181,7 @@ void triggleListCommand(struct redisClient *c)
         addReplyError(c,"wrong dbid for triggle");
         return;
     }
-   redisLog(REDIS_NOTICE,"dbid:%d key:%s",id,c->argv[2]->ptr);
+    redisLog(REDIS_NOTICE,"dbid:%d key:%s",id,c->argv[2]->ptr);
     struct dictEntry *de = dictFind(server.db[id].bridge_db.triggle_scipts,c->argv[2]->ptr);
     if(de)
     {
@@ -286,14 +286,14 @@ int triggle_event(struct redisClient *c,sds *funcname)
         addReplyError(c,"no funcname triggle_scipts in lua");
         return 0;
     }
-    luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
+    luaSetGlobalArray(server.lua,"KEYS",c->argv,c->argc);
 
     redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
  
 
     #ifdef BRIDGE_DEBUG
-    for(int i=0;i<c->argc-1;i++){
-        redisLog(REDIS_NOTICE,"%s",(c->argv+1)[i]->ptr);
+    for(int i=0;i<c->argc;i++){
+        redisLog(REDIS_NOTICE,"%s",c->argv[i]->ptr);
     }
     #endif
 
@@ -345,7 +345,7 @@ void call_bridge_event(struct redisClient *c,int event_type)
         {
             struct bridge_db_triggle_t * tmptrg=dictGetVal(trigs);
             if(tmptrg->event==event_type){ //找到指定的类型事件
-
+                        triggle_event(c,dictGetKey(trigs));
             }
         }
     }while(trigs!=NULL);
@@ -353,13 +353,13 @@ void call_bridge_event(struct redisClient *c,int event_type)
 
 
 }
-void call_bridge_event_before(struct redisClient *c,int event_type)
+void call_bridge_event_before(struct redisClient *c,int event_type=-1)
 {
     call_bridge_event(c,event_type);
 }
 
 
-void call_bridge_event_after(struct redisClient *c,int event_type)
+void call_bridge_event_after(struct redisClient *c,int event_type=-1)
 {
 
     call_bridge_event(c,event_type);

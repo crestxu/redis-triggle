@@ -89,9 +89,9 @@ void triggleListCommand(struct redisClient *c); //redisClient *c
 
 void call_bridge_event(struct redisClient *c,int event_type);
 
-void call_bridge_event_before(struct redisClient *c,int event_type=-1);
+void call_bridge_event_before(struct redisClient *c,int event_type);
 
-void call_bridge_event_after(struct redisClient *c,int event_type=-1);
+void call_bridge_event_after(struct redisClient *c,int event_type);
 
 
 #endif
