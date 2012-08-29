@@ -208,8 +208,9 @@ void flushallCommand(redisClient *c) {
 void delCommand(redisClient *c) {
     int deleted = 0, j;
 
-
-    
+    #ifdef TRIGGLE_INCLUDE
+	call_bridge_event_after(c,DELETING_EVENT);
+    #endif
     for (j = 1; j < c->argc; j++) {
         if (dbDelete(c->db,c->argv[j])) {
             signalModifiedKey(c->db,c->argv[j]);
@@ -218,7 +219,7 @@ void delCommand(redisClient *c) {
         }
     }
 	#ifdef TRIGGLE_INCLUDE
-	call_bridge_event(c,DELETE_EVENT);
+	call_bridge_event_after(c,DELETED_EVENT);
 	#endif 
     addReplyLongLong(c,deleted);
 }
