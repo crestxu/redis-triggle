@@ -250,7 +250,7 @@ struct redisCommand redisCommandTable[] = {
     {"slowlog",slowlogCommand,-2,"r",0,NULL,0,0,0,0,0},
     {"script",scriptCommand,-2,"ras",0,NULL,0,0,0,0,0},
     {"time",timeCommand,1,"rR",0,NULL,0,0,0,0,0},
-    #ifdef BAIDU_BRIDGE
+    #ifdef TIRGGLE_INCLUDE
 	{"triggleadd",triggleCommand,-4,"ras",0,NULL,0,0,0,0,0},
 	{"triggledel",triggleDelCommand,3,"w",0,NULL,0,0,0,0,0},
 	{"trigglelist",triggleListCommand,3,"r",0,NULL,0,0,0,0,0},
@@ -681,7 +681,7 @@ void activeExpireCycle(void) {
                     sds key = dictGetKey(de);
                     robj *keyobj = createStringObject(key,sdslen(key));
 					
-				    #ifdef BAIDU_BRIDGE
+				    #ifdef TRIGGLE_INCLUDE
 					do_bridge_notify(db,keyobj);
 					#endif
       
@@ -1316,7 +1316,7 @@ void initServer() {
 		
 		
     }
-	#ifdef BAIDU_BRIDGE
+	#ifdef TRIGGLE_INCLUDE
 		init_bridge_server();
 	#endif
     server.pubsub_channels = dictCreate(&keylistDictType,NULL);

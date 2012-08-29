@@ -12,46 +12,46 @@ aof.o: aof.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   bio.h
 bio.o: bio.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   bio.h
 bitops.o: bitops.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 cluster.o: cluster.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   endianconv.h
 config.o: config.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 crc16.o: crc16.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 crc64.o: crc64.c
 db.o: db.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 debug.o: debug.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   sha1.h
 dict.o: dict.c fmacros.h dict.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
@@ -67,29 +67,29 @@ multi.o: multi.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 networking.o: networking.c redis.h fmacros.h config.h \
   ../deps/lua/src/lua.h ../deps/lua/src/luaconf.h ae.h sds.h dict.h \
   adlist.h zmalloc.h ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 object.o: object.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 pqsort.o: pqsort.c
 pubsub.o: pubsub.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 rand.o: rand.c
 rdb.o: rdb.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   lzf.h zipmap.h endianconv.h
 redis-benchmark.o: redis-benchmark.c fmacros.h ae.h \
   ../deps/hiredis/hiredis.h sds.h adlist.h zmalloc.h \
@@ -99,7 +99,7 @@ redis.o: redis.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   slowlog.h bio.h asciilogo.h
 redis-check-aof.o: redis-check-aof.c fmacros.h config.h
 redis-check-dump.o: redis-check-dump.c lzf.h
@@ -112,13 +112,13 @@ replication.o: replication.c redis.h fmacros.h config.h \
   ../deps/lua/src/lua.h ../deps/lua/src/luaconf.h ae.h sds.h dict.h \
   adlist.h zmalloc.h ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 rio.o: rio.c fmacros.h rio.h sds.h util.h
 scripting.o: scripting.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   sha1.h rand.h ../deps/lua/src/lauxlib.h ../deps/lua/src/lua.h \
   ../deps/lua/src/lualib.h
 sds.o: sds.c sds.h zmalloc.h ../deps/jemalloc/include/jemalloc/jemalloc.h \
@@ -127,7 +127,7 @@ sentinel.o: sentinel.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   ../deps/hiredis/hiredis.h ../deps/hiredis/async.h \
   ../deps/hiredis/hiredis.h
 sha1.o: sha1.c sha1.h config.h
@@ -135,44 +135,44 @@ slowlog.o: slowlog.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   slowlog.h
 sort.o: sort.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h \
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h \
   pqsort.h
 syncio.o: syncio.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 t_hash.o: t_hash.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 t_list.o: t_list.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 t_set.o: t_set.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 t_string.o: t_string.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 t_zset.o: t_zset.c redis.h fmacros.h config.h ../deps/lua/src/lua.h \
   ../deps/lua/src/luaconf.h ae.h sds.h dict.h adlist.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h anet.h ziplist.h \
-  intset.h version.h util.h baidu_bridge/bridge_include.h rdb.h rio.h
+  intset.h version.h util.h triggle/triggle_include.h rdb.h rio.h
 util.o: util.c fmacros.h util.h
 ziplist.o: ziplist.c zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
@@ -183,4 +183,4 @@ zipmap.o: zipmap.c zmalloc.h ../deps/jemalloc/include/jemalloc/jemalloc.h \
 zmalloc.o: zmalloc.c config.h zmalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc.h \
   ../deps/jemalloc/include/jemalloc/jemalloc_defs.h
-baidu_bridge/bridge_process.o: baidu_bridge/bridge_process.c baidu_bridge/bridge_include.h redis.h dict.h
+triggle/triggle_process.o: triggle/triggle_process.c triggle/triggle_include.h redis.h dict.h

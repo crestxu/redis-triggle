@@ -33,7 +33,7 @@
 #include "intset.h"  /* Compact integer set structure */
 #include "version.h" /* Version macro */
 #include "util.h"    /* Misc functions useful in many places */
-#include "baidu_bridge/bridge_include.h"
+#include "triggle/triggle_include.h"
 /* Error codes */
 #define REDIS_OK                0
 #define REDIS_ERR               -1
@@ -305,7 +305,7 @@ typedef struct redisDb {
     int id;
 
 	
-	#ifdef BAIDU_BRIDGE
+	#ifdef TRIGGLE_INCLUDE
 	BRIDGE_DB_EXTENTIONS
 	#endif
 

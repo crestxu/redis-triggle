@@ -217,7 +217,7 @@ void delCommand(redisClient *c) {
             deleted++;
         }
     }
-	#ifdef BAIDU_BRIDGE
+	#ifdef TRIGGLE_INCLUDE
 	call_bridge_event(c,DELETE_EVENT);
 	#endif 
     addReplyLongLong(c,deleted);
