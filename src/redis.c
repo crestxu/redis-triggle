@@ -250,8 +250,8 @@ struct redisCommand redisCommandTable[] = {
     {"slowlog",slowlogCommand,-2,"r",0,NULL,0,0,0,0,0},
     {"script",scriptCommand,-2,"ras",0,NULL,0,0,0,0,0},
     {"time",timeCommand,1,"rR",0,NULL,0,0,0,0,0},
-    #ifdef TIRGGLE_INCLUDE
-	{"triggleadd",triggleCommand,-4,"ras",0,NULL,0,0,0,0,0},
+    #ifdef TRIGGLE_INCLUDE
+	{"triggleadd",triggleCommand,5,"ras",0,NULL,0,0,0,0,0},
 	{"triggledel",triggleDelCommand,3,"w",0,NULL,0,0,0,0,0},
 	{"trigglelist",triggleListCommand,3,"r",0,NULL,0,0,0,0,0},
     #endif
@@ -682,7 +682,8 @@ void activeExpireCycle(void) {
                     robj *keyobj = createStringObject(key,sdslen(key));
 					
 				    #ifdef TRIGGLE_INCLUDE
-					do_bridge_notify(db,keyobj);
+					//do_bridge_notify(db,keyobj);
+                    call_expire_delete_event(db,keyobj);
 					#endif
       
                     propagateExpire(db,keyobj);
@@ -1697,6 +1698,11 @@ int processCommand(redisClient *c) {
         return REDIS_OK;
     }
 
+
+#ifdef BRIDGE_DEBUG
+
+    redisLog(REDIS_NOTICE,"i'm coming");
+#endif
     /* Exec the command */
     if (c->flags & REDIS_MULTI &&
         c->cmd->proc != execCommand && c->cmd->proc != discardCommand &&
@@ -1706,11 +1712,11 @@ int processCommand(redisClient *c) {
         addReply(c,shared.queued);
     } else {
 	#ifdef TRIGGLE_INCLUDE
-	   call_bridge_event_before(c);
+	   CALL_BRIDGE_EVENT_BEFORE(c);
     #endif
         call(c,REDIS_CALL_FULL);
 	#ifdef TRIGGLE_INCLUDE
-	    call_bridge_event_after(c);
+	    CALL_BRIDGE_EVENT_AFTER(c);
 	#endif 
     }
     return REDIS_OK;

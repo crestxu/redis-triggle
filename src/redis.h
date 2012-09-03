@@ -305,10 +305,6 @@ typedef struct redisDb {
     int id;
 
 	
-	#ifdef TRIGGLE_INCLUDE
-	BRIDGE_DB_EXTENTIONS
-	#endif
-
 } redisDb;
 
 /* Client MULTI/EXEC state */
@@ -578,7 +574,11 @@ typedef struct {
  *----------------------------------------------------------------------------*/
 
 struct redisServer {
-    /* General */
+	#ifdef TRIGGLE_INCLUDE
+	BRIDGE_DB_EXTENTIONS
+	#endif
+
+   /* General */
     redisDb *db;
     dict *commands;             /* Command table hahs table */
     aeEventLoop *el;
