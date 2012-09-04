@@ -623,10 +623,16 @@ int rdbSave(char *filename) {
     snprintf(magic,sizeof(magic),"REDIS%04d",REDIS_RDB_VERSION);
     if (rdbWriteRaw(&rdb,magic,9) == -1) goto werr;
 
+#ifdef TRIGGLE_INCLUDE
+
+    redisLog(REDIS_NOTICE,"start to save triggles");
+    rdb_save_triggles(&rdb);
+#endif 
+
     for (j = 0; j < server.dbnum; j++) {
         redisDb *db = server.db+j;
         dict *d = db->dict;
-        if (dictSize(d) == 0) continue;
+        if (dictSize(d) == 0) { redisLog(REDIS_NOTICE,"no key in db:%d",j);continue;}
         di = dictGetSafeIterator(d);
         if (!di) {
             fclose(fp);
@@ -649,7 +655,9 @@ int rdbSave(char *filename) {
         }
         dictReleaseIterator(di);
     }
+    
     di = NULL; /* So that we don't release it again on error. */
+
 
     /* EOF opcode */
     if (rdbSaveType(&rdb,REDIS_RDB_OPCODE_EOF) == -1) goto werr;
@@ -1050,6 +1058,12 @@ int rdbLoad(char *filename) {
         errno = EINVAL;
         return REDIS_ERR;
     }
+#ifdef TRIGGLE_INCLUDE
+
+
+     rdb_load_triggle(&rdb);
+#endif
+
 
     startLoading(fp);
     while(1) {
@@ -1114,7 +1128,10 @@ int rdbLoad(char *filename) {
         if (expiretime != -1) setExpire(db,key,expiretime);
 
         decrRefCount(key);
+    
     }
+
+
     /* Verify the checksum if RDB version is >= 5 */
     if (rdbver >= 5 && server.rdb_checksum) {
         uint64_t cksum, expected = rdb.cksum;

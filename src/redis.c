@@ -1699,10 +1699,7 @@ int processCommand(redisClient *c) {
     }
 
 
-#ifdef BRIDGE_DEBUG
 
-    redisLog(REDIS_NOTICE,"i'm coming");
-#endif
     /* Exec the command */
     if (c->flags & REDIS_MULTI &&
         c->cmd->proc != execCommand && c->cmd->proc != discardCommand &&

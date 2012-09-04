@@ -132,7 +132,7 @@ dictType keytriggleDictType = {
 
 int luatriggleCreateFunction(lua_State *lua, sds funcname, robj *body) {
     sds funcdef = sdsempty();
- 
+
     funcdef = sdscat(funcdef,"function ");
     funcdef = sdscatlen(funcdef,funcname,sdslen(funcname));
     funcdef = sdscatlen(funcdef,"() ",3);
@@ -158,7 +158,7 @@ int luatriggleCreateFunction(lua_State *lua, sds funcname, robj *body) {
     }
 
     redisLog(REDIS_NOTICE,"call ok !create lua function start: %s",funcdef);
-    
+
     return REDIS_OK;
 }
 
@@ -263,6 +263,14 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     redisLog(REDIS_NOTICE,"dbid: %s keypattern: %s script_source: %s ",db_id->ptr,key_pattern->ptr,script_source->ptr);
     int id = atoi(db_id->ptr);
     int int_event=process_trigglecmd(event_type->ptr);
+    if(int_event==-1)
+    {
+        addReplyError(c,"undefine event in redis triggle");
+        return;
+    }
+
+
+    
     redisLog(REDIS_NOTICE,"get event:%d for: %s",int_event,event_type->ptr);
     if(id<0||id>server.dbnum)
     {
@@ -534,7 +542,7 @@ void call_bridge_event(struct redisClient *c,int triggle_place,int event_type)
 
         event_type=process_trigglecmd(cmds);
 
-        redisLog(REDIS_NOTICE,"cmds:%s id:%d",cmds,event_type);
+  //      redisLog(REDIS_NOTICE,"cmds:%s id:%d",cmds,event_type);
         sdsfree(cmds);
     }
 
@@ -548,7 +556,7 @@ void call_bridge_event(struct redisClient *c,int triggle_place,int event_type)
         {
             struct bridge_db_triggle_t * tmptrg=dictGetVal(trigs);
             if(tmptrg->event==event_type){ //找到指定的类型事件
-                redisLog(REDIS_NOTICE,"triggle_event:%d,%s",event_type,(char *)dictGetKey(trigs));
+//                redisLog(REDIS_NOTICE,"triggle_event:%d,%s",event_type,(char *)dictGetKey(trigs));
                 triggle_event(c,dictGetKey(trigs));
             }
         }
@@ -663,3 +671,102 @@ void call_expire_delete_event(void *pdb,void *pkeyobj)
     decrRefCount(keyobj);  
 
 }
+
+
+void rdb_save_triggles(rio *rdb)
+{
+
+    //save event 
+    //db_num int int int int 
+    //db 
+    //scripts_num
+    //key event lua_scripts 
+    //key event lua_scripts 
+    //.......
+    dictIterator *di = NULL;
+    dictEntry *de;   
+    int i=0;
+    for(i=0;i<server.dbnum;i++){
+        int eventid=server.bridge_db.bridge_event[i]; 
+        rioWrite(rdb,&eventid,4);
+    }
+    for(i=0;i<server.dbnum;i++)
+    {
+        dict *d = server.bridge_db.triggle_scipts[i];
+        int mysize=dictSize(d);
+        rioWrite(rdb,&mysize,4);
+        if (dictSize(d) == 0) continue;
+        di = dictGetSafeIterator(d);
+        if (!di) {
+            return REDIS_ERR;
+        }
+        /* Iterate this DB writing every entry */
+        while((de = dictNext(di)) != NULL) {
+            sds keystr = dictGetKey(de);
+            robj key;
+            initStaticStringObject(key,keystr);
+            if (rdbSaveStringObject(rdb,&key) == -1) return -1;
+
+            struct bridge_db_triggle_t * tmptrg=dictGetVal(de);
+            int event_id=tmptrg->event; 
+            rioWrite(rdb,&event_id,4);
+            int db_id=tmptrg->dbid; 
+            rioWrite(rdb,&db_id,4);
+            if (rdbSaveObjectType(rdb,tmptrg->lua_scripts) == -1) return -1;
+            if (rdbSaveObject(rdb,tmptrg->lua_scripts) == -1) return -1; 
+        }
+    }
+    if (di) dictReleaseIterator(di);
+}
+
+void rdb_load_triggle(rio *rdb)
+{
+    //save event 
+    //db_num int int int int 
+    //db 
+    //scripts_num
+    //key event lua_scripts 
+    //key event lua_scripts 
+    //.......
+    int i=0;
+    for(i=0;i<server.dbnum;i++){
+        int eventid=rioRead(rdb,&eventid,4);
+        server.bridge_db.bridge_event[i]=eventid;
+//        printf('read from dump file eventid:%d',eventid);
+    }
+    long j=0;
+    for(i=0;i<server.dbnum;i++)
+    {
+
+        
+        int dsize;
+        rioRead(rdb,&dsize,4);
+    //    redisLog(REDIS_NOTICE,"read triggle dbsize, dbid:%d size:%d",i,dsize);
+        for(j=0;j<dsize;j++)
+        {
+             struct bridge_db_triggle_t *tmptrg=zmalloc(sizeof(struct bridge_db_triggle_t));
+            
+            robj* key=rdbLoadStringObject(rdb);
+            
+            rioRead(rdb,&tmptrg->event,4);
+            rioRead(rdb,&tmptrg->dbid,4);
+            int type;
+            type=rdbLoadType(rdb);
+            robj *mm=rdbLoadObject(type,rdb);
+            tmptrg->lua_scripts=mm;
+
+      //      redisLog(REDIS_NOTICE,"redis one triggle row, key:%s event:%d db:%d script:%s",copy,tmptrg->event,tmptrg->dbid,tmptrg->lua_scripts->ptr);
+
+            sds copy=sdsdup(key->ptr);
+            dictAdd(server.bridge_db.triggle_scipts[i],copy,tmptrg);
+            decrRefCount(key);
+
+
+
+        }
+        
+    }
+
+}
+
+

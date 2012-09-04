@@ -6,6 +6,7 @@
 #define BRIDGE_KEY_NOTIFY 1
 #define BRIDGE_KEY_UNNOTIFY 0 
 #include"dict.h"
+#include"rio.h"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -140,5 +141,8 @@ void call_bridge_event_after(struct redisClient *c,int event_type);
 
 void call_expire_delete_event(void *db,void *keyobj);
 
+void rdb_save_triggles(rio *rio);
+
+void rdb_load_triggle(rio *rio);
 
 #endif
