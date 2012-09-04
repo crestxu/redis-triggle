@@ -304,7 +304,11 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
         return ;
     }
 
-
+   lua_getglobal(server.lua,key_pattern->ptr);
+   if (lua_isnil(server.lua,1)) {
+        lua_pop(server.lua,1);
+        redisLog(REDIS_WARNING,"No function define in lua:%s",key_pattern->ptr);
+   }
     /*end lua check*/
 
 
@@ -443,7 +447,7 @@ int triggle_event(struct redisClient *c,sds funcname)
     redisSrand48(0);
     server.lua_random_dirty = 0;
     server.lua_write_dirty = 0;
-    lua_getglobal(server.lua,(char *)funcname);
+    lua_getglobal(server.lua,funcname);
 
 
 
@@ -460,7 +464,7 @@ int triggle_event(struct redisClient *c,sds funcname)
             if (luatriggleCreateFunction(server.lua,funcname,tmptrg->lua_scripts) == REDIS_ERR) return -1;
             /* Now the following is guaranteed to return non nil */
             lua_getglobal(server.lua, funcname);
-            //redisAssert(!lua_isnil(server.lua,1));
+            redisAssert(!lua_isnil(server.lua,1));
 
 
         }
@@ -515,6 +519,7 @@ int triggle_event(struct redisClient *c,sds funcname)
     server.lua_caller = NULL;
     lua_gc(server.lua,LUA_GCSTEP,1);
 
+    redisLog(REDIS_NOTICE,"after stack: %d",lua_gettop(server.lua));
     //for slaves
     //
 
@@ -583,7 +588,7 @@ int triggle_expire_event(redisDb *db,sds funcname,robj *key)
     redisSrand48(0);
     server.lua_random_dirty = 0;
     server.lua_write_dirty = 0;
-    lua_getglobal(server.lua,(char *)funcname);
+    lua_getglobal(server.lua,funcname);
 
 
 
@@ -600,7 +605,7 @@ int triggle_expire_event(redisDb *db,sds funcname,robj *key)
             if (luatriggleCreateFunction(server.lua,funcname,tmptrg->lua_scripts) == REDIS_ERR) return -1;
             /* Now the following is guaranteed to return non nil */
             lua_getglobal(server.lua, funcname);
-            //redisAssert(!lua_isnil(server.lua,1));
+            redisAssert(!lua_isnil(server.lua,1));
 
 
         }
@@ -698,22 +703,22 @@ void rdb_save_triggles(rio *rdb)
         if (dictSize(d) == 0) continue;
         di = dictGetSafeIterator(d);
         if (!di) {
-            return REDIS_ERR;
+            return ;
         }
         /* Iterate this DB writing every entry */
         while((de = dictNext(di)) != NULL) {
             sds keystr = dictGetKey(de);
             robj key;
             initStaticStringObject(key,keystr);
-            if (rdbSaveStringObject(rdb,&key) == -1) return -1;
+            if (rdbSaveStringObject(rdb,&key) == -1) return;
 
             struct bridge_db_triggle_t * tmptrg=dictGetVal(de);
             int event_id=tmptrg->event; 
             rioWrite(rdb,&event_id,4);
             int db_id=tmptrg->dbid; 
             rioWrite(rdb,&db_id,4);
-            if (rdbSaveObjectType(rdb,tmptrg->lua_scripts) == -1) return -1;
-            if (rdbSaveObject(rdb,tmptrg->lua_scripts) == -1) return -1; 
+            if (rdbSaveObjectType(rdb,tmptrg->lua_scripts) == -1) return ;
+            if (rdbSaveObject(rdb,tmptrg->lua_scripts) == -1) return ; 
         }
     }
     if (di) dictReleaseIterator(di);

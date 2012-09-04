@@ -769,6 +769,7 @@ void evalGenericCommand(redisClient *c, int evalsha) {
             addReply(c, shared.noscripterr);
             return;
         }
+        redisLog(REDIS_NOTICE,"no script in lua stack:%d",lua_gettop(server.lua));
         if (luaCreateFunction(c,lua,funcname,c->argv[1]) == REDIS_ERR) return;
         /* Now the following is guaranteed to return non nil */
         lua_getglobal(lua, funcname);
@@ -795,6 +796,7 @@ void evalGenericCommand(redisClient *c, int evalsha) {
         delhook = 1;
     }
 
+    redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
     /* At this point whatever this script was never seen before or if it was
      * already defined, we can call it. We have zero arguments and expect
      * a single return value. */
@@ -822,6 +824,7 @@ void evalGenericCommand(redisClient *c, int evalsha) {
     luaReplyToRedisReply(c,lua);
     lua_gc(lua,LUA_GCSTEP,1);
 
+    redisLog(REDIS_NOTICE,"after stack: %d",lua_gettop(server.lua));
     /* If we have slaves attached we want to replicate this command as
      * EVAL instead of EVALSHA. We do this also in the AOF as currently there
      * is no easy way to propagate a command in a different way in the AOF
