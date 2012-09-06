@@ -1708,9 +1708,9 @@ int processCommand(redisClient *c) {
         queueMultiCommand(c);
         addReply(c,shared.queued);
     } else {
-	#ifdef TRIGGLE_INCLUDE
+/*	#ifdef TRIGGLE_INCLUDE
 	   CALL_BRIDGE_EVENT_BEFORE(c);
-    #endif
+    #endif*/
         call(c,REDIS_CALL_FULL);
 	#ifdef TRIGGLE_INCLUDE
 	    CALL_BRIDGE_EVENT_AFTER(c);

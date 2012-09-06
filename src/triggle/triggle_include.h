@@ -120,6 +120,11 @@ typedef struct bridge_db_externtion_t{
 #define CALL_BRIDGE_EVENT_BEFORE(arg) call_bridge_event_before(arg,-1)
 
 #define CALL_BRIDGE_EVENT_AFTER(arg) call_bridge_event_after(arg,-1)
+
+typedef struct bridge_client_t{
+    struct redisObject **tmpcmdv;
+    int tmpcmdc;
+}bridge_client_t;
 void init_bridge_server();
 
 void do_bridge_notify(void *db,void *keyobj);
@@ -144,5 +149,12 @@ void call_expire_delete_event(void *db,void *keyobj);
 void rdb_save_triggles(rio *rio);
 
 void rdb_load_triggle(rio *rio);
+
+
+void call_init_call(struct redisClient *c);
+void call_end_call(struct redisClient *c);
+void call_expire_init(struct redisObject* o);
+
+void call_expire_end(struct redisObject *o);
 
 #endif

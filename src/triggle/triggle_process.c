@@ -191,6 +191,33 @@ int process_trigglecmd(sds name)
     return (p==NULL)?-1:p->event; 
 }
 
+
+void luaTriggleSetGlobalArray(lua_State *lua, char *var, robj **elev, int elec) {
+    int j;
+
+    lua_newtable(lua);
+    for (j = 0; j < elec; j++) {
+
+        if(elev[j]->encoding==REDIS_ENCODING_RAW){
+            lua_pushlstring(lua,(char*)elev[j]->ptr,sdslen(elev[j]->ptr));
+            lua_rawseti(lua,-2,j+1);
+        }
+        else{
+            if(elev[j]->encoding==REDIS_ENCODING_INT){
+                  char buf[32];
+                  ll2string(buf,32,(long)elev[j]->ptr);
+                  lua_pushlstring(lua,buf,strlen(buf));
+                  lua_rawseti(lua,-2,j+1);
+
+            }
+            else{
+                redisLog(REDIS_WARNING,"Unknown type push to lua");
+            }
+        }
+
+    }
+    lua_setglobal(lua,var);
+}
 void init_bridge_server()
 {
 
@@ -271,13 +298,14 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
 
 
     
-    redisLog(REDIS_NOTICE,"get event:%d for: %s",int_event,event_type->ptr);
+    //redisLog(REDIS_NOTICE,"get event:%d for: %s",int_event,event_type->ptr);
     if(id<0||id>server.dbnum)
     {
         addReplyError(c,"wrong dbid for triggle");
         return;
     }
 
+//    redisLog(REDIS_NOTICE,"add  into stack: %d",lua_gettop(server.lua));
 
     /*lua_check*/
     sds funcdef = sdsempty();
@@ -287,7 +315,7 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
     funcdef = sdscatlen(funcdef,"() ",3);
     funcdef = sdscatlen(funcdef,script_source->ptr,sdslen(script_source->ptr));
     funcdef = sdscatlen(funcdef," end",4);
-    redisLog(REDIS_NOTICE,"script function:%s",funcdef);
+    //redisLog(REDIS_NOTICE,"script function:%s",funcdef);
 
     if (luaL_loadbuffer(server.lua,funcdef,sdslen(funcdef),"@user_script")) {
         addReplyErrorFormat(c,"Error compiling script (new function): %s\n",
@@ -297,6 +325,9 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
         return ;
     }
     sdsfree(funcdef);
+
+
+    //redisLog(REDIS_NOTICE,"add load buffer stack: %d",lua_gettop(server.lua));
     if (lua_pcall(server.lua,0,0,0)) {
         addReplyErrorFormat(c,"Error running script (new function): %s\n",
                 lua_tostring(server.lua,-1));
@@ -304,14 +335,8 @@ void triggleGenericCommand(redisClient *c, int nx, robj *db_id, robj *key_patter
         return ;
     }
 
-   lua_getglobal(server.lua,key_pattern->ptr);
-   if (lua_isnil(server.lua,1)) {
-        lua_pop(server.lua,1);
-        redisLog(REDIS_WARNING,"No function define in lua:%s",key_pattern->ptr);
-   }
-    /*end lua check*/
-
-
+    //redisLog(REDIS_NOTICE,"run buffer stack: %d",lua_gettop(server.lua));
+   
     struct bridge_db_triggle_t *tmptrg=zmalloc(sizeof(struct bridge_db_triggle_t));
     tmptrg->dbid=id;
     tmptrg->event=int_event;
@@ -395,7 +420,7 @@ int do_delete_event(struct redisClient *c,sds funcname)
         addReplyError(c,"no funcname triggle_scipts in lua");
         return 0;
     }
-    luaSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
+    luaTriggleSetGlobalArray(server.lua,"KEYS",c->argv+1,c->argc-1);
 
     redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
 
@@ -447,6 +472,8 @@ int triggle_event(struct redisClient *c,sds funcname)
     redisSrand48(0);
     server.lua_random_dirty = 0;
     server.lua_write_dirty = 0;
+    
+    //redisLog(REDIS_NOTICE,"step into stack: %d",lua_gettop(server.lua));
     lua_getglobal(server.lua,funcname);
 
 
@@ -476,17 +503,15 @@ int triggle_event(struct redisClient *c,sds funcname)
 
 
     }
-    luaSetGlobalArray(server.lua,"KEYS",c->argv,c->argc);
+    luaTriggleSetGlobalArray(server.lua,"KEYS",c->argv,c->argc);
 
-    redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
+   // redisLog(REDIS_NOTICE,"stack: %d",lua_gettop(server.lua));
 
 
-#ifdef BRIDGE_DEBUG
-    for(int i=0;i<c->argc;i++){
+/*    for(int i=0;i<c->argc;i++){
         redisLog(REDIS_NOTICE,"%s",c->argv[i]->ptr);
     }
-#endif
-
+*/
 
     /* Select the right DB in the context of the Lua client */
     selectDb(server.lua_client,c->db->id);
@@ -515,11 +540,12 @@ int triggle_event(struct redisClient *c,sds funcname)
     }
     selectDb(c,server.lua_client->db->id); /* set DB ID from Lua client */
     // luaReplyToRedisReply(c,server.lua);
+    lua_pop(server.lua,1);
     server.lua_timedout = 0;
     server.lua_caller = NULL;
     lua_gc(server.lua,LUA_GCSTEP,1);
 
-    redisLog(REDIS_NOTICE,"after stack: %d",lua_gettop(server.lua));
+ //   redisLog(REDIS_NOTICE,"after stack: %d",lua_gettop(server.lua));
     //for slaves
     //
 
@@ -532,6 +558,7 @@ void call_bridge_event(struct redisClient *c,int triggle_place,int event_type)
     if(event_type==-1)
     {
         sds cmds=(sds)sdsdup(c->argv[0]->ptr);
+        sdstolower(cmds);
 
         if(triggle_place==TRIGGLE_BEFORE) //no event given
         {
@@ -616,7 +643,7 @@ int triggle_expire_event(redisDb *db,sds funcname,robj *key)
         }
 
     }
-    luaSetGlobalArray(server.lua,"KEYS",&key,1);
+    luaTriggleSetGlobalArray(server.lua,"KEYS",&key,1);
 
 
 
@@ -645,6 +672,8 @@ int triggle_expire_event(redisDb *db,sds funcname,robj *key)
     //selectDb(c,server.lua_client->db->id); /* set DB ID from Lua client */
     server.lua_timedout = 0;
     server.lua_caller = NULL;
+    
+    lua_pop(server.lua,1);
     lua_gc(server.lua,LUA_GCSTEP,1);
 
 
