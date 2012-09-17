@@ -684,13 +684,15 @@ void activeExpireCycle(void) {
 				    #ifdef TRIGGLE_INCLUDE
 					//do_bridge_notify(db,keyobj);
                     call_expire_delete_event(db,keyobj);
-					#endif
-      
-                    propagateExpire(db,keyobj);
-                    dbDelete(db,keyobj);
-                    decrRefCount(keyobj);
-	                expired++;
-                    server.stat_expiredkeys++;
+                    //for bridge event do not expire the key, you can use lua to delte the keys  
+
+                    #endif
+
+                        propagateExpire(db,keyobj);
+                        dbDelete(db,keyobj);
+                        decrRefCount(keyobj);
+                        expired++;
+                        server.stat_expiredkeys++;
                 }
             }
             /* We can't block forever here even if there are many keys to

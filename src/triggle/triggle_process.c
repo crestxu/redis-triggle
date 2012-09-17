@@ -587,7 +587,9 @@ void call_bridge_event(struct redisClient *c,int triggle_place,int event_type)
         if(trigs!=NULL)
         {
             struct bridge_db_triggle_t * tmptrg=dictGetVal(trigs);
-            if(tmptrg->event==event_type){ //找到指定的类型事件
+
+            if(tmptrg->event==event_type&&strncmp(c->argv[1]->ptr,dictGetKey(trigs),sdslen(dictGetKey(trigs)))==0){ //找到指定的类型事件
+            //if(tmptrg->event==event_type){ //找到指定的类型事件
 //                redisLog(REDIS_NOTICE,"triggle_event:%d,%s",event_type,(char *)dictGetKey(trigs));
                 triggle_event(c,dictGetKey(trigs));
             }
@@ -694,7 +696,8 @@ void call_expire_delete_event(void *pdb,void *pkeyobj)
         if(trigs!=NULL)
         {
             struct bridge_db_triggle_t * tmptrg=dictGetVal(trigs);
-            if(tmptrg->event==DELETE_EXPIRE){ //找到指定的类型事件
+            //add func str check for the function only the key satisfy the funcname:XXXX can call the event 
+            if(tmptrg->event==DELETE_EXPIRE&&strncmp(keyobj->ptr,dictGetKey(trigs),sdslen(dictGetKey(trigs)))==0){ //找到指定的类型事件
                 redisLog(REDIS_NOTICE,"triggle_event:%d,%s",DELETE_EXPIRE,(char *)dictGetKey(trigs));
                 triggle_expire_event(db,dictGetKey(trigs),keyobj);
             }
